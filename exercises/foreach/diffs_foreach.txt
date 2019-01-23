@@ -1,0 +1,83 @@
+129,130c129
+< %token <while_stmt> WHILE FOREACH EVERY
+< %token <intval> IN
+---
+> %token <while_stmt> WHILE
+250,251c249
+<             | SEMI                       { gen_nop_instruction(program); }
+<             | foreach_stmt SEMI          { /* does nothing */ }
+---
+>             | SEMI            { gen_nop_instruction(program); }
+393,464d390
+< 
+< 
+< foreach_stmt: FOREACH IDENTIFIER IN IDENTIFIER 
+<       {     
+<          t_axe_variable *element = getVariable(program,$2);
+<          t_axe_variable *array = getVariable(program,$4);
+<          
+<          if(element->isArray || !array->isArray)
+<             notifyError(AXE_INVALID_VARIABLE);
+< 
+< 
+<          $3 = gen_load_immediate(program, 0);
+<          t_axe_expression idx = create_expression($3, REGISTER);
+<          
+< 
+<          int load_reg = loadArrayElement(program, $4, idx);
+<          int elem_reg = get_symbol_location(program, $2, 0);
+< 
+<          gen_andb_instruction(program, elem_reg, load_reg, load_reg, CG_DIRECT_ALL);
+< 
+< 
+<          $1.label_condition = assignNewLabel(program);
+<          $1.label_end = newLabel(program);
+< 
+<       }
+<       code_block EVERY exp DO
+<       {
+<          if($8.expression_type != IMMEDIATE)
+<             notifyError(AXE_INVALID_EXPRESSION);
+< 
+<          t_axe_variable *array = getVariable(program, $4);
+<          if($8.value < 1 || $8.value > array->arraySize)
+<             notifyError(AXE_INVALID_EXPRESSION);
+< 
+<          $7.label_end = newLabel(program);
+<          gen_bt_instruction(program, $7.label_end, 0);
+<          $7.label_condition = assignNewLabel(program);
+< 
+<       }
+<       code_block
+<       {
+<          assignLabel(program, $7.label_end);
+<          
+<          /*incremento indice*/
+<          gen_addi_instruction(program, $3, $3, 1);
+< 
+<          /*controllo condizione uscita*/
+<          int tmp_reg = getNewRegister(program);
+<          t_axe_variable *array = getVariable(program,$4);
+<          gen_subi_instruction(program, tmp_reg, $3, array->arraySize);
+<          gen_beq_instruction(program, $1.label_end, 0);
+< 
+<          /*letturna nuovo elemento*/
+<          t_axe_expression idx = create_expression($3, REGISTER);
+<          int load_reg = loadArrayElement(program, $4, idx);
+<          int elem_reg = get_symbol_location(program, $2, 0);
+<          gen_andb_instruction(program, elem_reg, load_reg, load_reg, CG_DIRECT_ALL);
+< 
+<          /*quale braanch prendere ? */
+<          /* (index / k) * k - index == 0 */
+< 
+<          gen_divi_instruction(program, tmp_reg, $3, $8.value);
+<          gen_muli_instruction(program, tmp_reg, tmp_reg, $8.value);
+<          gen_sub_instruction(program, tmp_reg, tmp_reg, $3, CG_DIRECT_ALL);
+< 
+<          gen_beq_instruction(program, $7.label_condition, 0);
+<          gen_bt_instruction(program, $1.label_condition, 0);
+<          
+<          assignLabel(program, $1.label_end);
+<       }
+< ;
+< 
