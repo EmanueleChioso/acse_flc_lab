@@ -1,6 +1,9 @@
 #!/bin/bash
 
-if [ $# -gt 0 ]; then
+
+
+
+if [ $# -gt 0 ] && [ -f $1.src ]; then
     
     cp acse/Acse.y exercises/$1/Acse_$1.y
     cp acse/Acse.lex exercises/$1/Acse_$1.lex
@@ -17,6 +20,8 @@ if [ $# -gt 0 ]; then
     rm dataflow.cfg
     rm output.cfg
     rm -r bin
+
+    rm acse/.Acse.y.swp
     rm acse/lex.yy.c
     rm acse/Acse.tab.h
     rm acse/Acse.tab.c
