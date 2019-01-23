@@ -1,0 +1,8 @@
+int a;
+
+from( a=0; )
+repeat { write(a);  }
+only if( a<5 )
+stepping( a=a+1; )
+
+
