@@ -9,7 +9,7 @@ Acse.y
 
     %token CHIOCCIOLA
 
-    %left CHIOCCIOLA //before the NOT_OP
+    %nonassoc CHIOCCIOLA //before the NOT_OP
 
 
 firstly we have to 'sanitize' our input and be sure
