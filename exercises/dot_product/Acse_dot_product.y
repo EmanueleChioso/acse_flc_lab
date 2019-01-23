@@ -132,7 +132,7 @@ extern int yyerror(const char* errmsg);
 %token <intval> TYPE
 %token <svalue> IDENTIFIER
 %token <intval> NUMBER
-%token <intval> CHIOCCIOLA
+%token CHIOCCIOLA
 
 // things i added for my tests 
 
@@ -156,8 +156,8 @@ extern int yyerror(const char* errmsg);
 %left SHL_OP SHR_OP
 %left MINUS PLUS
 %left MUL_OP DIV_OP
-%left CHIOCCIOLA
 %right NOT
+%nonassoc CHIOCCIOLA
 
 /*=========================================================================
                          BISON GRAMMAR
