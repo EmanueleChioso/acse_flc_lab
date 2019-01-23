@@ -1,0 +1,31 @@
+135d134
+< %token <label> RED
+574,601d572
+<                      
+<    | RED LPAR IDENTIFIER RPAR
+<    {
+<       t_axe_variable *vect = getVariable(program, $3);
+< 
+<       if(!vect->isArray)
+<          notifyError(AXE_INVALID_VARIABLE);
+<       
+<       int idx = gen_load_immediate(program, 0);
+<       t_axe_expression idx_exp = create_expression(idx, REGISTER);
+< 
+<       int elem = gen_load_immediate(program, 0);
+<       int result = gen_load_immediate(program, 0);
+<       int tmp = gen_load_immediate(program, 0);
+< 
+<       $1 = assignNewLabel(program);    
+< 
+<       
+<       elem = loadArrayElement(program, $3, idx_exp);
+<       gen_add_instruction(program, result, result, elem, CG_DIRECT_ALL);
+<       gen_addi_instruction(program, idx, idx, 1);
+<       gen_sub_instruction(program, tmp, vect->arraySize, idx, CG_DIRECT_ALL);
+<       gen_bne_instruction(program, $1, 0);
+<       
+<       
+<     
+<       $$ = create_expression(result, REGISTER);
+<    }
