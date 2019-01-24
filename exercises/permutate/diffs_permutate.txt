@@ -1,0 +1,80 @@
+127d126
+< %token RX, LX
+129,130d127
+< 
+< %token <label> PERMUTATE 
+143d139
+< %type <list> pos_list
+254d249
+<             | permutate_statement SEMI {}
+419,488d413
+< 
+< pos_list :  NUMBER 
+<             {
+<                $$ = addFirst(NULL, $1);
+<             }
+<             | NUMBER COMMA pos_list 
+<             {
+<                $$ = addFirst($3, $1);
+<             }
+< ;
+< 
+< 
+< permutate_statement:   PERMUTATE LPAR IDENTIFIER COMMA 
+<                         {
+<                            t_axe_variable *array =getVariable(program, $3);
+<                            if(!array->isArray)
+<                               notifyError(AXE_INVALID_VARIABLE);
+<                         }
+<                         LX pos_list RX RPAR
+<                         {
+<                            //init
+<                            t_list *primo = cloneList($7);
+<                            int b = getNewRegister(program);
+<                            int a = getNewRegister(program);
+<                            int b_idx = getNewRegister(program);
+<                            int a_idx = getNewRegister(program);
+<                            t_axe_expression b_idx_ex;
+<                            t_axe_expression a_idx_ex;
+< 
+< 
+<                            t_list *secondo = getElementAt(primo, 1);
+< 
+<                            // a -> b 
+<                            gen_addi_instruction(program, b_idx, REG_0, secondo->data);
+<                            b_idx_ex = create_expression(b_idx ,REGISTER);
+<                            b = loadArrayElement(program, $3, b_idx_ex);
+<                            t_axe_expression b_exp = create_expression(b, REGISTER);
+< 
+<                            //prendo a
+<                            gen_addi_instruction(program, a_idx, REG_0, primo->data);
+<                            a_idx_ex = create_expression(a_idx,REGISTER);
+<                            a = loadArrayElement(program, $3, a_idx_ex);
+<                            t_axe_expression a_exp = create_expression(a, REGISTER);
+<                            storeArrayElement(program, $3, b_idx_ex, a_exp);
+< 
+<                            int tmp = getNewRegister(program);
+<                            t_axe_expression tmp_exp;
+< 
+< 
+<                            //loop inizio
+< 
+<                            while(getLength(secondo) > 1){
+<                               
+<                               gen_add_instruction(program, tmp, tmp, b, CG_DIRECT_ALL);   
+< 
+<                               tmp_exp = create_expression(tmp, REGISTER);                                                                                                                                                
+<                               
+<                               secondo = getElementAt(secondo, 1);
+<                               
+<                               gen_addi_instruction(program, b_idx, REG_0, secondo->data);
+<                               b_idx_ex = create_expression(b_idx,REGISTER);
+<                               b = loadArrayElement(program, $3, a_idx_ex);
+<                               t_axe_expression b_exp = create_expression(a, REGISTER);
+<                               storeArrayElement(program, $3, b_idx_ex, tmp_exp);
+<                            }
+<                         }
+< ;
+< 
+< 
+< 

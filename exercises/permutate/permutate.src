@@ -1,0 +1,17 @@
+int arr[6];
+
+arr[0]=0;
+arr[1]=1;
+arr[2]=2;
+arr[3]=3;
+arr[4]=4;
+arr[5]=5;
+
+permutate( arr,q[1,2,3]p );
+
+write(arr[0]);
+write(arr[1]);
+write(arr[2]);
+write(arr[3]);
+write(arr[4]);
+write(arr[5]);
