@@ -468,32 +468,26 @@ exp: NUMBER      { $$ = create_expression ($1, IMMEDIATE); }
       if (!array1->isArray || !array2->isArray || array1->arraySize != array2->arraySize) 
          notifyError(AXE_INVALID_VARIABLE);
       
-      t_axe_label *end = newLabel(program);
-      t_axe_label *start = newLabel(program);
+      t_axe_label *loop_start = newLabel(program);
 
       int result = getNewRegister(program);
       gen_addi_instruction(program, result, REG_0, 0);
 
-      int index_reg = getNewRegister(program);
+      int index_reg = getNewRegister(program);       
       gen_addi_instruction(program, index_reg, REG_0, array1->arraySize);
       gen_subi_instruction(program,index_reg, index_reg, 1);
 
       int tmp = getNewRegister(program);
 
-      assignLabel(program, start);
+      assignLabel(program, loop_start);
       gen_mul_instruction(program, tmp, 
                loadArrayElement(program , $1, create_expression(index_reg,REGISTER)),
                loadArrayElement(program , $3, create_expression(index_reg,REGISTER)), CG_DIRECT_ALL);
       gen_add_instruction(program, result, result, tmp, CG_DIRECT_ALL); // aggiornamento di result
 
       gen_subi_instruction(program, index_reg,index_reg,1); //indice 
-
-      gen_andb_instruction(program, index_reg, index_reg, index_reg, CG_DIRECT_ALL);
-      gen_blt_instruction(program, end, 0);
-      gen_bt_instruction(program, start,0);
-      
-
-      assignLabel(program, end);
+      gen_andb_instruction(program, index_reg,index_reg,index_reg, CG_DIRECT_ALL);
+      gen_bge_instruction(program, loop_start, 0);
 
       free($1);
       free($3);

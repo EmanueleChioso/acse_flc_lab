@@ -9,7 +9,7 @@ Acse.y
 
     %token CHIOCCIOLA
 
-    %nonassoc CHIOCCIOLA //before the NOT_OP
+    %nonassoc CHIOCCIOLA 
 
 
 firstly we have to 'sanitize' our input and be sure
@@ -42,7 +42,7 @@ variable declarations </br>
         int tmp = getNewRegister(program);
 
 loop: </br>
-multiplication -> add to result -> update index -> jump to end if index<0
+multiplication -> add to result -> update index -> jump to start if index>=0
 
         assignLabel(program, start);
         gen_mul_instruction(program, tmp, 
@@ -50,16 +50,14 @@ multiplication -> add to result -> update index -> jump to end if index<0
                 loadArrayElement(program , $3, create_expression(index_reg,REGISTER)), CG_DIRECT_ALL);
         gen_add_instruction(program, result, result, tmp, CG_DIRECT_ALL); 
 
+
         gen_subi_instruction(program, index_reg,index_reg,1); //index 
 
-        //jump 
-        gen_andb_instruction(program, index_reg, index_reg, index_reg, CG_DIRECT_ALL);
-        gen_blt_instruction(program, end, 0);
-        gen_bt_instruction(program, start,0);
+        //jump
+        gen_andb_instruction(program, index_reg,index_reg,index_reg, CG_DIRECT_ALL);
+        gen_bge_instruction(program, loop_start, 0);
 
 
-
-        
 
 since we declared it as an expression, we must return an expression 
         assignLabel(program, end);
